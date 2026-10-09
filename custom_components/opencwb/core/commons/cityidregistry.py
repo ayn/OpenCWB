@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import bz2
-from pkg_resources import resource_filename
+from importlib.resources import files
 from ..weatherapi12.location import Location
 
 
@@ -193,8 +193,8 @@ class CityIDRegistry:
             raise ValueError('Error: city name must start with a letter')
 
     def _get_lines(self, filename):
-        res_name = resource_filename(__name__, filename)
-        with bz2.open(res_name, mode='rb') as fh:
+        resource = files(__package__).joinpath(filename)
+        with resource.open('rb') as source, bz2.open(source, mode='rb') as fh:
             lines = fh.readlines()
             if type(lines[0]) is bytes:
                 lines = map(lambda l: l.decode("utf-8"), lines)
